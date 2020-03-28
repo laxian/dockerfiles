@@ -1,0 +1,50 @@
+# 基于jenkins基础镜像
+FROM jenkins/jenkins
+USER root
+MAINTAINER zhouweixian
+# # 添加jdk8压缩包至 /usr/local 目录，压缩包会自动解压，解压后目录名称为jdk1.8.0_231
+# ADD jdk-8u241-linux-x64.tar.gz /usr/local/env/jdk8/
+# # 配置JAVA_HOME环境变量
+# ENV JAVA_HOME /usr/local/env/jdk8/jdk1.8.0_241/
+# # 将JAVA_HOME/bin 添加至PATH环境变量
+# ENV PATH $JAVA_HOME/bin:$PATH
+
+# 更换源
+RUN sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list
+RUN apt-get update
+
+RUN uname -a
+# 安装常用命令
+# RUN apt install -y curl
+# RUN apt install -y wget
+# RUN apt install -y zip
+RUN apt install unzip
+RUN apt install vim
+# RUN apt install -y tar
+# RUN apt install -y lsof
+# RUN apt install -y git
+
+#设置工作目录
+WORKDIR /home
+
+# 拷贝JDK安装包到容器中
+# COPY jdk-8u191-linux-x64.rpm /home
+# 安装JDK
+# RUN apt install -y jdk-8u191-linux-x64.rpm \
+# && java -version
+# 设置JAVA_HOME环境变量
+# ENV JAVA_HOME /usr/java/jdk1.8.0_191-amd64
+
+# 拷贝android tools到容器中
+COPY commandlinetools-linux-6200805_latest.zip /home
+# 解压android tools
+RUN mkdir -p /opt/app/android-sdk
+RUN unzip -d /opt/app/android-sdk commandlinetools-linux-6200805_latest.zip
+ENV ANDROID_HOME /opt/app/android-sdk
+ENV PATH $ANDROID_HOME:$PATH
+
+# 安装需要的platforms和build-tools版本
+RUN yes | /opt/app/android-sdk/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-29"
+RUN yes | /opt/app/android-sdk/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-28"
+RUN yes | /opt/app/android-sdk/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;29.0.3"
+RUN yes | /opt/app/android-sdk/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;28.0.3"
