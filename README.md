@@ -50,3 +50,7 @@ EXPOSE 暴露端口
 VOLUME 挂载
 CMD 启动容器时指定默认执行的命令
 ```
+
+
+## docker nginx
+[nginx-README.md](!https://github.com/laxian/dockerfiles/blob/master/nginx/README.md)
