@@ -26,4 +26,4 @@ if [ ! -f ~/docker/share/a.txt ]; then
 fi
 
 # 打开
-open "http://localhost/a.txt"
+open "http://localhost/share/a.txt"
