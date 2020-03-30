@@ -15,7 +15,7 @@
 7. nginx -s reload
 
 ### 配置
-default.conf
+[default.conf](https://github.com/laxian/dockerfiles/blob/master/nginx/default.conf)
 
 ### 操作
-cmd.sh
+[cmd.sh](https://github.com/laxian/dockerfiles/blob/master/nginx/cmd.sh)
