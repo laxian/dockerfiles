@@ -1,3 +1,6 @@
 *.zip
 *.gz
 *.tar
+nginx-upload-module
+nginx-1.16.1
+masterzen-nginx-upload-progress-module-a788dea

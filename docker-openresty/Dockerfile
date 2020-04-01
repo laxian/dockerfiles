@@ -1,0 +1,6 @@
+
+FROM openresty
+MAINTAINER zhouweixian
+
+
+
