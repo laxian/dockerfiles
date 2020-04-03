@@ -37,6 +37,8 @@ WORKDIR /home
 
 # 拷贝android tools到容器中
 COPY commandlinetools-linux-6200805_latest.zip /home
+COPY /usr/share/zoneinfo/Asia/Shanghai /etc/localtime  
+
 # 解压android tools
 RUN mkdir -p /opt/app/android-sdk
 RUN unzip -d /opt/app/android-sdk commandlinetools-linux-6200805_latest.zip
