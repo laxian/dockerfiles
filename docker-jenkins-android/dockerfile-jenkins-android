@@ -1,7 +1,6 @@
 # 基于jenkins基础镜像
 FROM jenkins/jenkins
 USER root
-MAINTAINER zhouweixian
 # # 添加jdk8压缩包至 /usr/local 目录，压缩包会自动解压，解压后目录名称为jdk1.8.0_231
 # ADD jdk-8u241-linux-x64.tar.gz /usr/local/env/jdk8/
 # # 配置JAVA_HOME环境变量
