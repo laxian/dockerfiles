@@ -11,6 +11,14 @@ local function my_get_file_name(header)
     return nil
 end
 
+local function basename(path)
+    return path:sub(path:find("/[^/]*$") + 1)
+end
+
+local function dir(path)
+    return path:sub(1, path:find("/[^/]*$"))
+end
+
 local chunk_size = 4096
 local form = upload:new(chunk_size)
 local file
@@ -27,6 +35,7 @@ while true do
         local file_name = my_get_file_name(res)
         if file_name then
             file_path = ngx.var.store_path..file_name
+            os.execute("mkdir -p "..dir(file_path))
             file = io.open(file_path, "w+")
             if not file then
                 ngx.say("failed to open file ", file_path)
