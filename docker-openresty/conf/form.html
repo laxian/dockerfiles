@@ -1,10 +1,47 @@
-<form name="form1" method="post" enctype="multipart/form-data" action="/upload-simulation">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FileUpload Test Page</title>
+</head>
+<script type="text/javascript">
+	function deleteSubmit(){
+		var input = document.getElementById("delFileName").value;
+		if(!input){
+			alert("输入要删除的文件名！")
+			return fasle;
+		}
+		var deleteForm = document.getElementById("deleteForm");
+		var action = "/delete-simulation/"+input;
+		deleteForm.setAttribute("action",action);
+		return true;
+
+	}
+	function refreshFiles(){
+		document.getElementById('ifr').contentWindow.location.reload();
+	}
+</script>
+<body>
+<form name="form1" method="post" enctype="multipart/form-data" action="/upload-simulation" target="outFrame">
 	<center>上传文件</center>
     <div>
         <label for="image1">上传文件：</label>
         <input name="filename" type="file" />
+		<input type="submit" name="upload" value="上传" />
     </div>
-        <input type="submit" name="upload" value="上传" />
 </form>
+<br>
+<form id="deleteForm" name="delete_form" method="get" onsubmit="return deleteSubmit()" action="/delete-simulation/" target="outFrame">
+    <div>
+        <label for="image1">删除文件：</label>
+        <input id="delFileName" name="filename" type="input" placeholder="输入要删除的文件名(不含路径)"/>
+		<input type="submit" name="delete" value="删除" />
+    </div>
+</form>
+<iframe src="about:blank" width="100%" height="50px" frameborder="0" name="outFrame" onload="refreshFiles()"></iframe>
+<br><br>
+<button onclick="refreshFiles()">刷新</button>
+<iframe id="ifr" src="/files/simulation/" width="100%" height="600px" stydy="border:0px;"/>
 
-<iframe src="/files/" width="100%" height="600px" stydy="border:0px;">
+</body>
+<html>

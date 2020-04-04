@@ -6,7 +6,7 @@ docker build -t openresty-uploader:0.1 .
 2. run 
 
 ```shell
-docker run -d -p 80:80 --name openresty-uploade openresty-uploader:0.1
+docker run -d -p 80:80 --name openresty-uploader openresty-uploader:0.1
 ```
 
 3. test

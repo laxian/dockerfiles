@@ -1,0 +1,5 @@
+//location /{
+
+header_filter_by_lua 'ngx.header["Content-Type"]="text/html;charset=utf8"';
+
+//}
