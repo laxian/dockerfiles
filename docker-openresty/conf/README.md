@@ -7,9 +7,9 @@
 ```
 默认以下路径已添加认证(若不需要,可自行删除): 
 ```
-location ~ ^/upload-simulation(/.*)?$
+location ~ ^/upload-jenkins(/.*)?$
 location ~ ^/upload-summary(/.*)?$ 
-location ~ ^/delete-simulation/(.*)$ 
+location ~ ^/delete-jenkins/(.*)$ 
 location ~ ^/delete-summary/(.*)$
 
 ```
