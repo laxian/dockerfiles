@@ -31,10 +31,10 @@ Docker 时区问题
 2. 改变镜像或容器时区
 
 - alpine
-```shell
+```dockerfile
+    # timezone
 ENV TZ=Asia/Shanghai
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    # timezone
     && apk update && apk add ca-certificates \
     && apk add tzdata \
     && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
@@ -42,11 +42,18 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 ```
 
 - Ubuntu
-```shell
-ENV TZ=Asia/Shanghai
-
+```dockerfile
 # timezone
+ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
     && apt-get install tzdata \
     && dpkg-reconfigure --frontend noninteractive tzdata
+```
+
+其他时区？
+
+默认是Asia/Shanghai
+使用`timezone.sh`一键修改项目中的时区为本机时区
+```shell
+./timezone.sh
 ```
