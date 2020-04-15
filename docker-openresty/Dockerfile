@@ -1,5 +1,12 @@
 FROM openresty/openresty:alpine
 
+ENV TZ=Asia/Shanghai
+# timezone
+RUN apk update && apk add ca-certificates && \
+    apk add tzdata && \
+    ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone
+
 COPY conf/nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 COPY conf/auth.conf /etc/nginx/auth.conf
 COPY conf/user.db /etc/nginx/conf.d/user.db

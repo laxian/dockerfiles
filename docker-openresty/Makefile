@@ -23,3 +23,8 @@ push:
 restart:
 	docker exec -it openresty-uploade /bin/sh -c "nginx -s reload"
 
+cp:
+	docker cp conf/nginx.vh.default.conf openresty-uploade:/etc/nginx/conf.d/default.conf
+
+reload:
+	docker exec -it openresty-uploade /bin/sh -c "nginx -s reload"

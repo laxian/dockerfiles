@@ -12,13 +12,20 @@ USER root
 RUN sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list
 RUN apt-get update
 
+ENV TZ=Asia/Shanghai
+
+# timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+    && apt-get install tzdata \
+    && dpkg-reconfigure --frontend noninteractive tzdata
+
 RUN uname -a
 # 安装常用命令
 # RUN apt install -y curl
 # RUN apt install -y wget
 # RUN apt install -y zip
-RUN apt install -y unzip
-RUN apt install -y vim
+RUN apt install -y unzip \
+    && apt install -y vim
 # RUN apt install -y tar
 # RUN apt install -y lsof
 # RUN apt install -y git
