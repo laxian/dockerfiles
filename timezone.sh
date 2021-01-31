@@ -4,7 +4,7 @@
 # 替换时区为本机时区
 # ./timezone.sh [sub_dir]
 
-script_name=get_timezone.sh
+script_name=timezone.sh
 
 isMain() {
     __main=false
