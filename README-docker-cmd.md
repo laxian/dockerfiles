@@ -1,6 +1,7 @@
 
-### 常用docker命令
-```
+# 常用docker命令
+
+```shell
 docker pull ubuntu
 docker images
 docker ps
@@ -19,8 +20,9 @@ docker cp host_path containerID:container_path
 docker cp containerID:container_path host_path
 ```
 
-### Dockerfile 命令
-```
+## Dockerfile 命令
+
+```shell
 FROM 基础镜像
 USER
 MAINTAINER 维护者

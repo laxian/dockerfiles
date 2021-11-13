@@ -1,0 +1,20 @@
+<form name="form1" method="post" enctype="multipart/form-data" action="http://localhost/upload">
+    <div>
+        <label for="caption">AppId:</label>
+        <input id="AppId" onblur="javascript:updateAction();" type="text" value="cfttest" />
+    </div>
+    <div>
+        <label for="image1">上传文件：</label>
+        <input name="filedata" type="file" />
+    </div>
+    <div>
+        <label for="image1">上传类型：</label>
+        <select id="uptype" name="uptype">
+            <option value="0">唯一</option>
+            <option value="1">覆盖</option>
+        </select>
+    </div>
+    <div>
+        <input type="submit" name="upload" value="上传" />
+    </div>
+</form>
