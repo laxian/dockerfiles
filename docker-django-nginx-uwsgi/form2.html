@@ -1,17 +1,61 @@
 <head>
-    <title>Test upload</title>
-  </head>
-  <body>
-    <h2>Select files to upload</h2>
-    <form name="upload" method="POST" enctype="multipart/form-data" action="http://localhost:8002/upload-summary">
-      <input type="file" name="file1"><br>
-      <input type="file" name="file2"><br>
-      <input type="file" name="file3"><br>
-      <input type="file" name="file4"><br>
-      <input type="file" name="file5"><br>
-      <input type="file" name="file6"><br>
-      <input type="submit" name="submit" value="Upload">
-      <input type="hidden" name="test" value="value">
-    </form>
-  </body>
+  <title>Test upload</title>
+</head>
+<script type="text/javascript"
+  src="https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/js/lib/jquery-1-edb203c114.10.2.js"></script>
+<script>
+  function PostData() {
+    var f = new FormData($('#formIcon')[0]);
+    alert(f.get("icon"));
+    $.ajax({
+      type: "POST",
+      url: "http://localhost:3001/add_icon",
+      data: new FormData($('#formIcon')[0]),
+      success: function (msg) {
+        console.log(msg);
+      }
+    });
+    return false;
+  }
+</script>
+
+
+<script type="text/javascript">
+  $(function () {
+    $("#upload").click(function () {
+      var formData = new FormData($('#formIcon')[0]);
+      $.ajax({
+        type: 'post',
+        url: "http://localhost:3001/add_icon",
+        data: formData,
+        cache: false,
+        processData: false,
+        contentType: false,
+      }).success(function (data) {
+        alert(data);
+      }).error(function () {
+        alert("上传失败");
+      });
+    });
+  });
+</script>
+
+<body>
+  <h2>上传Icon</h2>
+  <form name="upload" method="POST" enctype="multipart/form-data" action="http://localhost:3001/add_icon">
+    <input type="file" name="icon"><br>
+    <input type="submit" name="submit" value="Upload">
+    <input type="hidden" name="test" value="value">
+  </form>
+  <h2>上传Apk</h2>
+  <form name="upload" method="POST" enctype="multipart/form-data" action="http://localhost:3001/add_apk">
+    <input type="file" name="apk"><br>
+    App Name: <input type="input" name="name" placeholder="NavApp"><br>
+    Apk Verson: <input type="input" name="verson" placeholder="1.0.0"><br>
+    <input type="submit" name="submit" value="Upload">
+    <input type="hidden" name="test" value="value">
+  </form>
+
+</body>
+
 </html>

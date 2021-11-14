@@ -7,7 +7,11 @@ COPY nginx-1.16.1 /usr/local/nginx-1.16.1
 COPY nginx-upload-module /usr/local/nginx-upload-module
 COPY masterzen-nginx-upload-progress-module-a788dea /usr/local/masterzen-nginx-upload-progress-module-a788dea
 COPY storeserver /var/www/storeserver
-COPY storeserver/storeserver/storeserver.conf /etc/nginx/conf.d/storeserver.conf
+COPY start.sh /var/www/storeserver/
+COPY get-pip.py /var/www/storeserver
+COPY form2.html /var/www/storeserver/
+COPY storeserver/storeserver_uwsgi.ini /var/www/storeserver
+COPY storeserver/storeserver.conf /etc/nginx/conf.d/storeserver.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
 WORKDIR /var/www/storeserver
@@ -86,4 +90,4 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     # 开放22端口
 EXPOSE 22 80 3001
 ENV PATH /usr/local/nginx/sbin:$PATH
-# CMD ["/var/www/storeserver/start.sh"]
+# ENTRYPOINT ["/var/www/storeserver/start.sh"]

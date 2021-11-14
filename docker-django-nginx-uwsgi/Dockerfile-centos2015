@@ -1,15 +1,19 @@
 FROM nginx:alpine
 # USER root
 
+ENV workdir /var/www/storeserver
+WORKDIR ${workdir}
 
 COPY nginx-upload-module /usr/local/nginx-upload-module
 COPY masterzen-nginx-upload-progress-module-a788dea /usr/local/masterzen-nginx-upload-progress-module-a788dea
-COPY storeserver /var/www/storeserver
-COPY storeserver/storeserver/storeserver.conf /etc/nginx/conf.d/storeserver.conf
+COPY storeserver ${workdir}
+COPY start.sh ${workdir}/
+COPY get-pip.py ${workdir}
+COPY form2.html ${workdir}/
+COPY storeserver/storeserver_uwsgi.ini ${workdir}
+COPY storeserver/storeserver.conf /etc/nginx/conf.d/storeserver.conf
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY get-pip.py /var/www/storeserver
 
-WORKDIR /var/www/storeserver
 ENV TZ=Asia/Shanghai
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
     && apk update && apk add ca-certificates \
@@ -31,7 +35,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && echo "daemon off;" >> /etc/nginx/ngnix.conf \
     && apk add python3 \
     && apk add vim \
-    && apk add uwsgi \
+    # && apk add uwsgi \
     && apk add unzip \
     && apk add sqlite \
     && apk add openrc \
@@ -41,9 +45,9 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && wget https://bootstrap.pypa.io/get-pip.py \
     && python3 get-pip.py \
     && pip install virtualenv \
-    && virtualenv /var/www/storeserver/venv --python=python3 \
-    && source /var/www/storeserver/venv/bin/activate \
-    && pip install -r /var/www/storeserver/requirements.txt \
+    && virtualenv ${workdir}/venv --python=python3 \
+    && source ${workdir}/venv/bin/activate \
+    && pip install -r ${workdir}/requirements.txt \
     && mkdir -p /run/uwsgi \
     && apk add uwsgi-http  \
     && apk add uwsgi-router_http \
@@ -61,4 +65,4 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     # 开放22端口
 EXPOSE 22 80 3001
 ENV PATH /usr/local/nginx/sbin:$PATH
-# CMD ["/var/www/storeserver/start.sh"]
+# CMD ["${workdir}/start.sh"]

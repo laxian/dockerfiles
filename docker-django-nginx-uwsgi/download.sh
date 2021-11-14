@@ -12,7 +12,7 @@ if [ -d nginx-upload-module ]; then
 else
 	# clone nginx_upload_module
 	echo "clone nginx_upload_module"
-	nginx_upload_module_url=https://github.com/vkholodkov/nginx-upload-module.git
+	nginx_upload_module_url=git@github.com:vkholodkov/nginx-upload-module.git
 	git clone $nginx_upload_module_url
 fi
 
