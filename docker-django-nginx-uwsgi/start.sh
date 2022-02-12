@@ -8,4 +8,6 @@ source ./venv/bin/activate
 
 python3 manage.py collectstatic --noinput
 
-uwsgi storeserver_uwsgi.ini && nginx &
+uwsgi storeserver_uwsgi.ini & 
+nginx &
+`which sshd` -D &

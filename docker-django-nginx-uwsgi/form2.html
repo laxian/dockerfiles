@@ -1,61 +1,223 @@
 <head>
   <title>Test upload</title>
 </head>
-<script type="text/javascript"
-  src="https://dss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/js/lib/jquery-1-edb203c114.10.2.js"></script>
-<script>
-  function PostData() {
-    var f = new FormData($('#formIcon')[0]);
-    alert(f.get("icon"));
-    $.ajax({
-      type: "POST",
-      url: "http://localhost:3001/add_icon",
-      data: new FormData($('#formIcon')[0]),
-      success: function (msg) {
-        console.log(msg);
-      }
-    });
-    return false;
-  }
-</script>
-
-
-<script type="text/javascript">
-  $(function () {
-    $("#upload").click(function () {
-      var formData = new FormData($('#formIcon')[0]);
-      $.ajax({
-        type: 'post',
-        url: "http://localhost:3001/add_icon",
-        data: formData,
-        cache: false,
-        processData: false,
-        contentType: false,
-      }).success(function (data) {
-        alert(data);
-      }).error(function () {
-        alert("上传失败");
-      });
-    });
-  });
-</script>
 
 <body>
+  <p>操作区（非必要不手动操作）</p>
+
   <h2>上传Icon</h2>
-  <form name="upload" method="POST" enctype="multipart/form-data" action="http://localhost:3001/add_icon">
-    <input type="file" name="icon"><br>
+  <form name="upload" method="POST" enctype="multipart/form-data" action="/add_icon">
+    <input type="file" name="icon" accept="image/jpeg,image/png"><br>
     <input type="submit" name="submit" value="Upload">
     <input type="hidden" name="test" value="value">
   </form>
   <h2>上传Apk</h2>
-  <form name="upload" method="POST" enctype="multipart/form-data" action="http://localhost:3001/add_apk">
-    <input type="file" name="apk"><br>
-    App Name: <input type="input" name="name" placeholder="NavApp"><br>
-    Apk Verson: <input type="input" name="verson" placeholder="1.0.0"><br>
+  <form name="upload" method="POST" enctype="multipart/form-data" action="/add_apk">
+    <input id="file-input" type="file" name="apk" onchange="fileSelect()"
+      accept="application/vnd.android.package-archive"><br>
+    App Name: <input id="app-name" type="input" name="name" placeholder="NavApp">
+    <br>
+    Apk Verson: <input id="apk-version" type="input" name="version" placeholder="1.0.0"><br>
     <input type="submit" name="submit" value="Upload">
-    <input type="hidden" name="test" value="value">
   </form>
 
+  <hr />
+
+  <div>
+    <p>查询区</p>
+    Base Type(GX|GX-BOX|GXLITE|R1|SCOOTER|LITE): <input id="robot-type" type="input" name="name" placeholder="GX"
+      value="GX">
+    <button onclick="listApps()">查询App</button>
+    <br />
+    App ID: <input id="apk-name" type="input" name="name" placeholder="17" value="17">
+    Base Type(dev|release|internal-release): <input id="base-type" type="input" name="name" placeholder="dev"
+      value="dev">
+    <button onclick="listApks()">查询Apk</button>
+    <div id="result-list" style="padding: 20px; margin: 5"></div>
+  </div>
+  <script src="./app-info-parser.min.js"></script>
+  <script>
+    function fileSelect() {
+      const files = document.getElementById('file-input').files
+      try {
+        const parser = new AppInfoParser(files[0])
+        parser.parse().then(result => {
+          document.getElementById("app-name").value = result['application']['label'][0]
+          document.getElementById("apk-version").value = result['versionName']
+          const div = document.createElement('div')
+          div.innerHTML = `
+            <div style="padding: 20px; margin-bottom: 10px; background: #fff; border-radius: 4px; font-size: 16px; color: #717171; border: 1px solid #d9d9d9; border-color: #e9e9e9;">
+              <p style="padding: 10px 0; display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">File Name: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ files[0].name }</span>
+              </p>
+              <p style="padding: 10px 0; display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">App Icon: </span>
+                <img style="width: 80px; height: 80px;" src="${result.icon}" alt="">
+              </p>
+              <p style="padding: 10px 0; display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">Package: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ result['package'] || result['CFBundleName'] }</span>
+              </p>
+              <p style="padding: 10px 0; display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">App Version: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ result['versionName'] || result['CFBundleShortVersionString'] }</span>
+              </p>
+              <p style="padding: 10px 0; display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">VersionCode: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ result['versionCode'] || result['CFBundleVersion'] }</span>
+              </p>
+            </div>
+          `
+          parentNode = document.getElementById('result-list')
+          clearAllNode(parentNode)
+          parentNode.appendChild(div)
+        }).catch(e => {
+          window.alert('Parse Error: ' + e)
+        })
+      } catch (e) {
+        window.alert('Parse Error: ' + e)
+      }
+    }
+  </script>
+
+  <script>
+    function listApps() {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-type", "application/json");
+
+      var raw = JSON.stringify({
+        "base_type": document.getElementById("robot-type").value
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
+
+      fetch(`http://${location.host}/list_apps`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+          showAppList(JSON.parse(result)['data'])
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    function showAppList(apps) {
+      div = document.getElementById("result-list");
+      clearAllNode(div)
+      for (let index = 0; index < apps.length; index++) {
+        const app = apps[index]
+        card = makeAppCard(app)
+        div.appendChild(card)
+      }
+    }
+
+    function makeAppCard(app) {
+      var element = document.createElement("div")
+      element.innerHTML =
+        `
+        <div style="margin-bottom: 10px; background: #fff; border-radius: 4px; font-size: 16px; color: #717171; border: 1px solid #d9d9d9; border-color: #e9e9e9;">
+              <p style="display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">App Name: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ app["app_name"] }</span>
+              </p>
+              <p style="display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">Package Name: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ app["package_name"] }</span>
+              </p>
+              <p style="display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">App Icon: </span>
+                <img style="width: 80px; height: 80px;" src="${app["app_icon"]}" alt="">
+              </p>
+              <p style="display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">车型: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ app["base_types"] }</span>
+              </p>
+              <p style="display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">APP ID: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ app["app_id"] }</span>
+              </p>
+              <p style="display: flex; overflow: hidden;">
+                <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;">description: </span>
+                <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ app["description"] }</span>
+              </p>
+        </div>
+        `
+      return element
+    }
+  </script>
+
+  <script>
+    function listApks() {
+      var myHeaders = new Headers();
+      myHeaders.append("Content-type", "application/json");
+
+      var raw = JSON.stringify({
+        "app_id": document.getElementById("apk-name").value,
+        "apk_type": document.getElementById("base-type").value
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
+
+      fetch(`http://${location.host}/list_apks`, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+          showApkList(JSON.parse(result)['data'])
+        })
+        .catch(error => console.log('error', error));
+    }
+
+    function showApkList(apks) {
+      div = document.getElementById("result-list");
+      clearAllNode(div)
+      for (let index = 0; index < apks.length; index++) {
+        const apk = apks[index]
+        card = makeApkCard(apk)
+        div.appendChild(card)
+      }
+    }
+
+    function makeApkCard(apk) {
+      var element = document.createElement("div")
+      element.innerHTML =
+        `
+        <div style="margin-bottom: 10px; background: #fff; border-radius: 4px; font-size: 16px; color: #717171; border: 1px solid #d9d9d9; border-color: #e9e9e9; display: flex; overflow: hidden; flex-direction: row">
+              <img style="width: 80px; height: 80px; margin: 10" src="${apk["apk_icon"]}" alt="">
+              <div style="display: flex; overflow: hidden; flex-direction: column; justify-content: center;">
+                <p">
+                  <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ apk["apk_name"] }</span>
+                </p>
+                <p">
+                  <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ apk["apk_version"] }</span>
+                </p>
+                <p">
+                  <span style="width: 0; flex: 1; overflow-wrap: break-word; word-wrap: break-word;">${ apk["update_time"] }</span>
+                </p>
+                <p">
+                  <span style="color: #000; text-align: right; width: 100px; font-weight: 600; padding-right: 20px;"><a href=${ apk["download_url"] }>Download</a></span>
+                </p>
+              </div>
+        </div>
+        `
+      return element
+    }
+  </script>
+  <script>
+    function clearAllNode(parentNode) {
+      while (parentNode.firstChild) {
+        var oldNode = parentNode.removeChild(parentNode.firstChild);
+        oldNode = null;
+      }
+    }
+  </script>
 </body>
 
 </html>

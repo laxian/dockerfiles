@@ -7,8 +7,8 @@ COPY nginx-1.16.1 /usr/local/nginx-1.16.1
 COPY nginx-upload-module /usr/local/nginx-upload-module
 COPY masterzen-nginx-upload-progress-module-a788dea /usr/local/masterzen-nginx-upload-progress-module-a788dea
 COPY storeserver /var/www/storeserver
-COPY start.sh /var/www/storeserver/
 COPY get-pip.py /var/www/storeserver
+COPY start.sh /var/www/storeserver/
 COPY form2.html /var/www/storeserver/
 COPY storeserver/storeserver_uwsgi.ini /var/www/storeserver
 COPY storeserver/storeserver.conf /etc/nginx/conf.d/storeserver.conf
@@ -60,7 +60,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositorie
     && echo "daemon off;" >> /etc/nginx/ngnix.conf \
     && apk add python3 \
     && apk add vim \
-    && apk add uwsgi \
+    # && apk add uwsgi \
     && apk add unzip \
     && apk add sqlite \
     && apk add openrc \
