@@ -51,17 +51,17 @@ RUN apt-get update && apt-get install -y \
 
 # 安装 Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
-    && echo '. $HOME/.cargo/env' >> /root/.bashrc \
-    && . $HOME/.cargo/env
-#     && rustup default nightly \
-#     && rustup component add rust-src --toolchain nightly-aarch64-unknown-linux-gnu
-# #     && . "$HOME/.cargo/env" \
-#     && rustup target add aarch64-unknown-linux-gnu
+    && echo '. $HOME/.cargo/env' >> $HOME/.bashrc \
+    && . $HOME/.cargo/env \
+    && rustup default nightly \
+    && ARCH=$(rustc --version --verbose | grep host | awk '{print $2}') \
+    && rustup target add ${ARCH} \
+    && rustup component add rust-src --toolchain nightly-${ARCH}
 
 # 安装 Node.js 和 Yarn
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
-    && . /root/.bashrc \
+    && . $HOME/.bashrc \
     && npm config set registry https://mirrors.huaweicloud.com/repository/npm/ \
     && npm install -g yarn
 #     && npm cache clean --force \
@@ -72,13 +72,13 @@ ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
 # 配置 VNC 密码
-RUN mkdir -p /root/.vnc \
-    && echo "password" | vncpasswd -f > /root/.vnc/passwd \
-    && chmod 600 /root/.vnc/passwd
+RUN mkdir -p $HOME/.vnc \
+    && echo "password" | vncpasswd -f > $HOME/.vnc/passwd \
+    && chmod 600 $HOME/.vnc/passwd
 
 # 添加 xstartup 脚本
-COPY xstartup /root/.vnc/xstartup
-RUN chmod +x /root/.vnc/xstartup
+COPY xstartup $HOME/.vnc/xstartup
+RUN chmod +x $HOME/.vnc/xstartup
 
 # 添加启动脚本
 RUN echo "#!/bin/bash\nvncserver :1 -geometry 1280x1024 -depth 24 -localhost no\ntail -f /dev/null" > /usr/local/bin/vnc-start.sh \

@@ -37,12 +37,14 @@ ENV OHPM_DIR=/usr/local/ohpm
 # 验证 ohpm 安装
 RUN ohpm-repo -v
 
+# 设置默认的主机IP环境变量
+ENV HOST_IP=localhost
+
 # 配置ohpm-repo
 RUN conf_path=$(realpath $OHPM_DIR/conf) && \
     cd $conf_path && \
-    current_ip=$(hostname -I | awk '{print $1}') && \
-    sed -i "s/listen: localhost:8088/listen: $current_ip:8088/" config.yaml && \
-    sed -i "s|#server: http://localhost:8088|server: http://$current_ip:8088|" config.yaml;
+    sed -i "s/listen: localhost:8088/listen: 0.0.0.0:8088/" config.yaml && \
+    sed -i "s|#server: http://localhost:8088|server: http://${HOST_IP}:8088|" config.yaml;
 
 # 定义启动脚本
 RUN echo '#!/bin/bash' > /usr/local/ohpm/start_ohpm.sh && \

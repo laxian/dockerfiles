@@ -14,7 +14,7 @@ USER_HOME=$(eval echo ~$SUDO_USER)
 # 更新系统并安装 TigerVNC Server 和 GNOME 桌面环境
 echo "更新系统并安装 TigerVNC Server 和 GNOME 桌面环境..."
 sudo apt update
-sudo apt install -y tigervnc-standalone-server tigervnc-common gnome-session gnome-panel gnome-terminal
+sudo apt install -y tigervnc-standalone-server tigervnc-common gnome-session gnome-panel gnome-terminal dbus-x11
 
 # 检查 gnome-session 是否安装成功
 if ! command -v gnome-session &> /dev/null; then
